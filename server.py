@@ -1,3 +1,9 @@
+"""
+Module Name: server
+Description: This module analyzes text to determine emotional scores.
+Author: robo-duck-monocle
+Date: 2025
+"""
 from flask import Flask, render_template, request
 from EmotionDetection.emotion_detection import emotion_detector
 
@@ -6,18 +12,18 @@ app = Flask("Emotion Detector")
 
 @app.route("/emotionDetector")
 def sent_detector():
+    """
+    Send text to the emotionDetector function and formats the response
+    """
     # Retrieve the text to analyze from the request arguments
     text_to_analyze = request.args.get('textToAnalyze')
 
     # Pass the text to the emotion_detector function and store the response
     res = emotion_detector(text_to_analyze)
 
-    # result_str = "For the given statement, the system response is "
-    # for emotion, score in response.items():
-    #     if (emotion !== "dominant_emotion"):
-    #         result_str + emotion + ":" + score + ", "
-    #     else:
-    #         result_str + ". The dominant emotion is " + emotion
+    # If error getting emotions, inform user
+    if res['dominant_emotion'] is None:
+        return "Invalid text! Please try again!"
 
     return (
         f"For the given statement, the system response is "
@@ -29,9 +35,11 @@ def sent_detector():
 
 @app.route("/")
 def render_index_page():
+    """
+    Index renderer
+    """
     return render_template('index.html')
 
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
-
